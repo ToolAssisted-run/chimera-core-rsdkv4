@@ -28,8 +28,14 @@ then records its hash.
 ## Settings
 
 The game (Sonic 1 or 2), language, screen width (320 to 424 pixels, 424 by
-default), Skip Start Menu, the picture's scale (1 or 2) and the random seed.
-Each is recorded in the project.
+default), Skip Start Menu, the picture's scale (1 or 2), the random seed, and
+the engine's developer menu (with a Dev Menu control to open it). Each is
+recorded in the project.
+
+## Save data
+
+Emulator > Export Save Data gives the game's saves, SData.bin and SGame.bin.
+A project takes them back in its Save data slot, under those names.
 
 ## How it draws
 

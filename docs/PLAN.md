@@ -106,6 +106,22 @@ samples now; the extra sound comes right after each menu press and jump. New
 check `sound effects` for both games; test script all passed, frontend
 tests 9/0.
 
+## Developer menu and save data (2026-10-17, chimera#302, user-decided)
+
+The same as the Sonic CD core's (chimera-core-rsdkv3, the same day): a
+Developer Menu setting (DevMenu in the engine's settings file) with a Dev
+Menu control, live only with the setting on, that the driver tells the
+engine as an Escape key event; and SData.bin and SGame.bin as the Export
+Save Data group, with a Save data slot that puts them back before the seal
+and refuses a name the game does not keep.
+
+Tests, on Sonic 1: `save data` (choosing the first save slot instead of No
+Save Mode writes SData.bin, 32,768 bytes; given back, the save select
+differs from a fresh game's; a wrong name is refused; native = sandbox) and
+`developer menu` (the picture changes with the setting on, not with it off;
+native = sandbox). Each failed with its part taken out. Frontend tests 9/0
+(15 bindings).
+
 ## Not done
 
 - Other releases of the data (Sonic Origins, iOS, the Android Forever

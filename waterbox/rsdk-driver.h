@@ -54,8 +54,14 @@ enum RsdkButton
 #define RSDK_AUDIO_SAMPLES (RSDK_AUDIO_RATE / RSDK_FRAME_RATE)
 
 /* 0 on failure, with the reason in err */
+/* the button after the engine's inputs: the PC keyboard's Escape, which
+ * opens the engine's developer menu when the Developer Menu setting is on
+ * (it is live only then) */
+#define RSDK_BTN_DEV_MENU RSDK_BTN_COUNT
+
 int rsdkdrv_init(char *err, int errsize);
 void rsdkdrv_set_button(int index, int down);
+int rsdkdrv_dev_menu(void);   /* the Developer Menu setting */
 /* runs the engine through its next frame */
 void rsdkdrv_frame(int render);
 const uint32_t *rsdkdrv_video(int *w, int *h);
@@ -81,9 +87,17 @@ struct rsdk_settings
 	int render_scale;    /* 1 .. RSDK_MAX_SCALE: the OpenGL picture's size */
 	int skip_start_menu; /* SkipStartMenu */
 	long random_seed;
+	int dev_menu;        /* DevMenu */
 };
 void rsdk_settings_read(struct rsdk_settings *s);
 int rsdk_files_load(const struct rsdk_settings *s, char *err, int errsize);
+
+/* The game's saves (SData.bin, SGame.bin) for Emulator > Export Save Data:
+ * a snapshot of those that hold anything, then each one's name and bytes. */
+int rsdk_saves_count(void);
+const char *rsdk_saves_name(int index);
+int64_t rsdk_saves_size(int index);
+const uint8_t *rsdk_saves_data(int index);
 
 #ifdef __cplusplus
 }

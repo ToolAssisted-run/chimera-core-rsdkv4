@@ -32,10 +32,12 @@
 
 #include <emulibc.h>
 #include <waterbox_settings.h>
+#include <waterbox_slots.h>
 
 #include "rsdk-driver.h"
 
 FILE *__real_fopen(const char *path, const char *mode);
+int __real_fclose(FILE *f);
 
 /* the data pack, sealed after Init */
 static uint8_t *g_pack;
@@ -76,6 +78,7 @@ void rsdk_settings_read(struct rsdk_settings *s)
 	s->render_scale = (int)wbx_setting_long("renderScale", 1);
 	s->skip_start_menu = wbx_setting_bool("skipStartMenu", 0);
 	s->random_seed = wbx_setting_long("randomSeed", 0);
+	s->dev_menu = wbx_setting_bool("devMenu", 0);
 }
 
 /* the engine's settings file (Userdata.cpp InitUserdata reads it): the
@@ -89,7 +92,7 @@ static void write_ini(const struct rsdk_settings *s)
 {
 	int n = snprintf(g_ini, sizeof g_ini,
 		"[Dev]\n"
-		"DevMenu=false\n"
+		"DevMenu=%s\n"
 		"EngineDebugMode=false\n"
 		"TxtScripts=false\n"
 		"StartingCategory=255\n"
@@ -121,7 +124,7 @@ static void write_ini(const struct rsdk_settings *s)
 		"[Controller 1]\n"
 		"Up=11\nDown=12\nLeft=13\nRight=14\nA=0\nB=1\nC=2\nX=3\nY=4\nZ=5\nL=9\nR=10\nStart=6\nSelect=4\n"
 		"LStickDeadzone=0.3\nRStickDeadzone=0.3\nLTriggerDeadzone=0.3\nRTriggerDeadzone=0.3\n",
-		s->language, s->skip_start_menu ? "true" : "false", s->render_scale, s->screen_width);
+		s->dev_menu ? "true" : "false", s->language, s->skip_start_menu ? "true" : "false", s->render_scale, s->screen_width);
 	g_ini_len = (size_t)n;
 }
 
@@ -165,11 +168,73 @@ static int read_pack(const struct rsdk_settings *st, char *err, int errsize)
 	return 1;
 }
 
+/* The project's save data (the savedata slot, chimera#302): SData.bin and
+ * SGame.bin as Export Save Data wrote them, put in place here at Init, before
+ * the seal, so they are part of the machine as it starts. A name the game
+ * does not keep fails the load: progress silently ignored is worse than a
+ * project that will not start. */
+static int seed_saves(char *err, int errsize)
+{
+	char name[256];
+	for (int i = 0; wbx_slot_name("savedata", i, name, (int)sizeof name); i++)
+	{
+		struct save_file *sv = NULL;
+		for (size_t k = 0; k < NSAVES; k++)
+			if (!strcasecmp(name, g_saves[k].name)) sv = &g_saves[k];
+		if (!sv)
+		{
+			snprintf(err, (size_t)errsize, "the save data %s is not a file this game keeps: it keeps SData.bin and SGame.bin", name);
+			return 0;
+		}
+		FILE *f = __real_fopen(name, "rb");
+		if (!f)
+		{
+			snprintf(err, (size_t)errsize, "the save data %s could not be opened", name);
+			return 0;
+		}
+		size_t cap = 0, n = 0;
+		char *data = NULL;
+		for (;;)
+		{
+			if (n == cap)
+			{
+				cap = cap ? cap * 2 : 65536;
+				data = (char *)realloc(data, cap);
+			}
+			const size_t got = fread(data + n, 1, cap - n, f);
+			n += got;
+			if (got == 0) break;
+		}
+		__real_fclose(f);
+		free(sv->data);
+		sv->data = data;
+		sv->size = n;
+	}
+	return 1;
+}
+
 int rsdk_files_load(const struct rsdk_settings *s, char *err, int errsize)
 {
 	write_ini(s);
-	return read_pack(s, err, errsize);
+	return read_pack(s, err, errsize) && seed_saves(err, errsize);
 }
+
+/* ------------------------------------------------------------ export */
+
+static int g_export[NSAVES];
+static int g_export_count;
+
+int rsdk_saves_count(void)
+{
+	g_export_count = 0;
+	for (size_t i = 0; i < NSAVES; i++)
+		if (g_saves[i].data && g_saves[i].size) g_export[g_export_count++] = (int)i;
+	return g_export_count;
+}
+const char *rsdk_saves_name(int index) { return index >= 0 && index < g_export_count ? g_saves[g_export[index]].name : ""; }
+int64_t rsdk_saves_size(int index) { return index >= 0 && index < g_export_count ? (int64_t)g_saves[g_export[index]].size : 0; }
+const uint8_t *rsdk_saves_data(int index) { return index >= 0 && index < g_export_count ? (const uint8_t *)g_saves[g_export[index]].data : NULL; }
+
 
 /* ------------------------------------------------------------ fopen */
 
@@ -229,7 +294,6 @@ SDL_RWops *__wrap_SDL_RWFromFile(const char *file, const char *mode)
 }
 
 /* a save written and closed: its bytes become the file */
-int __real_fclose(FILE *f);
 int __wrap_fclose(FILE *f)
 {
 	for (size_t i = 0; i < NSAVES; i++)

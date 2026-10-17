@@ -279,6 +279,62 @@ PY
 real_game "Sonic 1" sonic1 "$sonic1"
 real_game "Sonic 2" sonic2 "$sonic2"
 
+# Save data and the developer menu (chimera#302), on Sonic 1
+if [ -n "$sonic1" ]; then
+	echo "== Sonic 1: save data and the developer menu"
+	mkdir -p "$work/sd" "$work/sdg" "$work/sdin" "$work/sdin-out" "$work/sdx" "$work/fresh"
+	for d in sdg sdin sdx fresh; do
+		cp "$sonic1" "$work/$d/Sonic1.rsdk"
+		printf '{"game": "sonic1"}' > "$work/$d/settings"
+	done
+	# the save select's first save slot (Down, then A) instead of No Save Mode
+	# writes SData.bin; Export Save Data gives it; given back, the save select
+	# shows that slot in use, where a fresh game shows new games; a name the
+	# game does not keep is refused
+	"$native" "$work/sdg" --frames 3000 --press 1300:S:5 --press 1600:A:5 --press 1870:D:5 --press 1900:A:5 \
+		--press 2200:A:5 --press 2900:S:5 --savedata-out "$work/sd" > "$work/sd.n"
+	cp "$work/sd/SData.bin" "$work/sdin/" 2>/dev/null || true
+	printf '{"savedata":["SData.bin"]}' > "$work/sdin/slots"
+	"$native" "$work/sdin" --frames 1 --savedata-out "$work/sdin-out" > "$work/sdin1.n" || true
+	"$native" "$work/fresh" --frames 1890 --press 1300:S:5 --press 1600:A:5 > "$work/fresh.n"
+	"$native" "$work/sdin" --frames 1890 --press 1300:S:5 --press 1600:A:5 > "$work/seeded.n" || true
+	"$wbx" "$core" "$work/sdin" --frames 1890 --press 1300:S:5 --press 1600:A:5 > "$work/seeded.w" 2>/dev/null || true
+	cp "$work/sd/SData.bin" "$work/sdx/Other.bin" 2>/dev/null || true
+	printf '{"savedata":["Other.bin"]}' > "$work/sdx/slots"
+	"$native" "$work/sdx" --frames 1 > "$work/sdx.n" 2>&1 || true
+	if [ ! -s "$work/sd/SData.bin" ]; then
+		fail "Sonic 1: save data - choosing save slot 1 wrote no SData.bin to export"
+	elif ! cmp -s "$work/sd/SData.bin" "$work/sdin-out/SData.bin"; then
+		fail "Sonic 1: save data - a project given SData.bin does not start with those bytes"
+	elif [ "$(grep videoHash "$work/fresh.n")" = "$(grep videoHash "$work/seeded.n")" ]; then
+		fail "Sonic 1: save data - the save select with the save given is the fresh game's: the game did not read it"
+	elif ! grep -q "Other.bin is not a file this game keeps" "$work/sdx.n"; then
+		fail "Sonic 1: save data - a save named Other.bin was not refused ($(tail -1 "$work/sdx.n"))"
+	else
+		pass "Sonic 1: save data - SData.bin ($(stat -c %s "$work/sd/SData.bin") bytes) exported, given back and read (the save select differs from a fresh game's), a wrong name refused"
+		same "Sonic 1" "$work/seeded.w" "$work/seeded.n" "save data given: native = sandbox"
+	fi
+	# with the Developer Menu setting on, Dev Menu (Escape) opens it; with the
+	# setting off the same press changes nothing, as the control is not there
+	for dm in on off; do
+		mkdir -p "$work/dm-$dm"
+		cp "$sonic1" "$work/dm-$dm/Sonic1.rsdk"
+		if [ "$dm" = on ]; then printf '{"game": "sonic1", "devMenu": true}' > "$work/dm-$dm/settings"
+		else printf '{"game": "sonic1"}' > "$work/dm-$dm/settings"; fi
+		"$native" "$work/dm-$dm" --frames 800 --press 600:E:5 > "$work/dm-$dm.n"
+	done
+	"$wbx" "$core" "$work/dm-on" --frames 800 --press 600:E:5 > "$work/dm-on.w" 2>/dev/null
+	"$native" "$work/dm-off" --frames 800 > "$work/dm-none.n"
+	if [ "$(grep videoHash "$work/dm-on.n")" = "$(grep videoHash "$work/dm-off.n")" ]; then
+		fail "Sonic 1: developer menu - Dev Menu with the setting on made no difference to the picture"
+	elif [ "$(grep videoHash "$work/dm-off.n")" != "$(grep videoHash "$work/dm-none.n")" ]; then
+		fail "Sonic 1: developer menu - with the setting off, Dev Menu still changed the game"
+	else
+		pass "Sonic 1: developer menu - Dev Menu opens it with the setting on, and does nothing with the setting off"
+		same "Sonic 1" "$work/dm-on.w" "$work/dm-on.n" "developer menu: native = sandbox"
+	fi
+fi
+
 echo
 if [ $fails -eq 0 ]; then
 	echo "gate: all tests passed"

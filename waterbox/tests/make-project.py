@@ -4,7 +4,7 @@
 A Retro Engine v4 project is its settings, its firmware pin (the game's
 data file, by SHA-1) and an input log in the panel's own button names. The movie, if
 given, is one of the gate's (a frame a line, the buttons held as letters:
-U D L R, A B C, S Start; # comments), turned into Chimera's log rows.
+U D L R, A B C, S Start, E Dev Menu; # comments), turned into Chimera's log rows.
 
 usage: make-project.py <package> <out.chimeraProject> <frames> --data <Data.rsdk>
                        [--movie <movie>] [--settings <json>] [--log-out <path>]
@@ -17,7 +17,7 @@ import zipfile
 
 LETTERS = {"P1 Up": "U", "P1 Down": "D", "P1 Left": "L", "P1 Right": "R",
            "P1 A": "A", "P1 B": "B", "P1 C": "C", "P1 X": "X", "P1 Y": "Y", "P1 Z": "Z",
-           "P1 L": "l", "P1 R": "r", "P1 Start": "S", "P1 Select": "s"}
+           "P1 L": "l", "P1 R": "r", "P1 Start": "S", "P1 Select": "s", "Dev Menu": "E"}
 
 
 def sha1(path):
@@ -42,7 +42,9 @@ def main():
     cfg = json.loads(zipfile.ZipFile(a.package).read("waterbox.config"))
     settings = {d["name"]: d["default"] for d in cfg["settings"]}
     settings.update(json.loads(a.settings))
-    buttons = cfg["input"]["buttons"]
+    # a movie carries the live controls only: Dev Menu is there only with the
+    # Developer Menu setting on (wbx-entry.c IsButtonActive)
+    buttons = [b for b in cfg["input"]["buttons"] if b != "Dev Menu" or settings.get("devMenu")]
     rows = []
     if a.movie:
         for line in open(a.movie):

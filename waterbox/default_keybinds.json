@@ -2,7 +2,8 @@
   "_comment": [
     "Default bindings for the Retro Engine v4's fourteen inputs: the keyboard as the decompilation's own settings.ini has it - the arrows,",
     "Z, X and C for A, B and C, A, S and D for X, Y and Z, Q and E for L and R, Enter for Start, Tab for Select. The first pad: the d-pad and",
-    "left stick as the directions, its face buttons, shoulders, Start and Back."
+    "left stick as the directions, its face buttons, shoulders, Start and Back.",
+    "Dev Menu is Escape, as the decompilation opens its developer menu."
   ],
   "AllTrollers": {
     "Retro Engine v4": {
@@ -19,7 +20,8 @@
       "P1 L": "Q, J1 B5, X1 LeftShoulder",
       "P1 R": "E, J1 B6, X1 RightShoulder",
       "P1 Start": "Enter, J1 B10, X1 Start",
-      "P1 Select": "Tab, J1 B9, X1 Back"
+      "P1 Select": "Tab, J1 B9, X1 Back",
+      "Dev Menu": "Escape"
     }
   }
 }
