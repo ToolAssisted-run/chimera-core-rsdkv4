@@ -1,0 +1,12 @@
+[submodule "extern/RSDKv4"]
+	path = extern/RSDKv4
+	url = https://github.com/RSDKModding/RSDKv4-Decompilation
+[submodule "extern/SDL"]
+	path = extern/SDL
+	url = https://github.com/libsdl-org/SDL.git
+[submodule "extern/ogg"]
+	path = extern/ogg
+	url = https://github.com/xiph/ogg.git
+[submodule "extern/vorbis"]
+	path = extern/vorbis
+	url = https://github.com/xiph/vorbis.git

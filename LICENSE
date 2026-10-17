@@ -1,0 +1,56 @@
+MIT License
+
+Copyright (c) 2026 Sergio Martin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+What this licence covers, and what it does not
+
+The MIT licence above covers this repository's own files: the integration
+under waterbox/, the test game generator and its tune under waterbox/tests/,
+the documents and the build scripts (setup-mesa.sh is the touchHLE core's,
+under the same terms).
+
+It does NOT cover the engine. The engine is the RSDKv4 decompilation
+(github.com/RSDKModding/RSDKv4-Decompilation, the submodule extern/RSDKv4), a
+decompilation of Christian Whitehead's Retro Engine v4, under its own terms,
+the "RSDKv3/v4 DECOMPILATION SOURCE CODE LICENSE v2", whose text is in
+LICENSE-RSDK.txt and in every package. The files in patches/ change the
+decompilation's source, so they are modified copies of it and are under those
+terms too. In short, those terms allow copying, changing and distributing
+for public or private use as long as:
+
+  - any build given to anyone has the downloadable content off by default
+    (this core is built with RSDK_AUTOBUILD, which forces it off);
+  - nothing is used for profit;
+  - the decompilation and the original are credited to their authors, and
+    not claimed as one's own (original Retro Engine author: Christian
+    "Taxman" Whitehead; decompilation authors: Rubberduckycooly and st×tic);
+  - no game asset is distributed (this package carries none: the game's
+    data file is the user's);
+  - the licence travels with every modified copy of the source.
+
+A built package therefore combines this repository's code (MIT), the
+decompilation (its licence above) with the stb_image it carries (MIT or
+public domain), SDL 2 (zlib licence), libogg and libvorbis (BSD-3-Clause),
+and Mesa (MIT); its effective terms are the decompilation's, and it may not
+be used commercially. waterbox/package-licenses.json lists every part, and
+every package carries their texts.

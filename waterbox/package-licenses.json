@@ -1,0 +1,64 @@
+{
+  "package": "rsdkv4",
+  "effectiveTerms": "The RSDKv3/v4 Decompilation Source Code License v2 (non-commercial; credit the authors; downloadable content off by default; no game assets) for the engine and the patches to it; MIT for the integration; the libraries' own licences",
+  "commercialUse": "no: the decompilation's licence forbids any use for profit",
+  "note": "The built core combines this repository's integration (MIT) with the RSDKv4 decompilation, a decompilation of Christian \"Taxman\" Whitehead's Retro Engine v4 by Rubberduckycooly and st×tic, compiled in from the submodule extern/RSDKv4 with this repository's patches/ applied (a modified copy of its source, under its licence); stb_image (public domain or MIT), which the engine reads the menus' pictures with; SDL 2 (zlib licence); libogg and libvorbis (BSD-3-Clause), which decode the game's Ogg Vorbis music and sound effects; and Mesa (MIT), whose softpipe driver behind OSMesa is the OpenGL the engine draws its menus with. The decompilation's licence allows copying, modifying and distributing for public or private use as long as a build given to anyone has the downloadable content off by default (this core defines RSDK_AUTOBUILD, which forces it off), nothing is used for profit, the decompilation and the original are credited and not claimed, no game asset is distributed, and the licence goes with every modified copy of the source. The package carries none of Sonic 1's or Sonic 2's data: the games' data files are the project's, supplied by the user.",
+  "components": [
+    {
+      "name": "chimera-core-rsdkv4 (integration)",
+      "license": "MIT",
+      "url": "https://github.com/ToolAssisted-run/chimera-core-rsdkv4",
+      "commit": "{selfCommit}",
+      "file": "LICENSE",
+      "sourceUrl": "https://github.com/ToolAssisted-run/chimera-core-rsdkv4/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "RSDKv4 decompilation (Retro Engine v4)",
+      "license": "RSDKv3/v4 Decompilation Source Code License v2 (non-commercial)",
+      "url": "https://github.com/RSDKModding/RSDKv4-Decompilation",
+      "commit": "{submodule:extern/RSDKv4}",
+      "file": "extern/RSDKv4/LICENSE.md",
+      "sourceUrl": "https://github.com/RSDKModding/RSDKv4-Decompilation/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "stb_image (in the decompilation, dependencies/all/stb-image)",
+      "license": "MIT OR Unlicense",
+      "url": "https://github.com/nothings/stb",
+      "commit": "{submodule:extern/RSDKv4/dependencies/all/stb-image}",
+      "file": "extern/RSDKv4/dependencies/all/stb-image/LICENSE",
+      "sourceUrl": "https://github.com/nothings/stb/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "SDL 2",
+      "license": "Zlib",
+      "url": "https://github.com/libsdl-org/SDL",
+      "commit": "{submodule:extern/SDL}",
+      "file": "extern/SDL/LICENSE.txt",
+      "sourceUrl": "https://github.com/libsdl-org/SDL/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "libogg",
+      "license": "BSD-3-Clause",
+      "url": "https://github.com/xiph/ogg",
+      "commit": "{submodule:extern/ogg}",
+      "file": "extern/ogg/COPYING",
+      "sourceUrl": "https://github.com/xiph/ogg/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "libvorbis",
+      "license": "BSD-3-Clause",
+      "url": "https://github.com/xiph/vorbis",
+      "commit": "{submodule:extern/vorbis}",
+      "file": "extern/vorbis/COPYING",
+      "sourceUrl": "https://github.com/xiph/vorbis/archive/{commit}.tar.gz"
+    },
+    {
+      "name": "Mesa (softpipe + OSMesa, the core's OpenGL)",
+      "license": "MIT",
+      "url": "https://gitlab.freedesktop.org/mesa/mesa",
+      "version": "24.0.9",
+      "file": "build/mesa/docs/license.rst",
+      "sourceUrl": "https://archive.mesa3d.org/mesa-24.0.9.tar.xz"
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+diff --git a/RSDKv4/RetroEngine.cpp b/RSDKv4/RetroEngine.cpp
+index 5f48c28..f9a19c7 100644
+--- a/RSDKv4/RetroEngine.cpp
++++ b/RSDKv4/RetroEngine.cpp
+@@ -541,81 +541,90 @@ void RetroEngine::Run()
+ 
+         Engine.deltaTime = 1.0 / 60;
+ #endif
+-        running = ProcessEvents();
++        RunFrame();
++    }
+ 
+-        // Focus Checks
+-        if (!(disableFocusPause & 2)) {
+-            if (!Engine.hasFocus) {
+-                if (!(Engine.focusState & 1))
+-                    Engine.focusState = PauseSound() ? 3 : 1;
+-            }
+-            else if (Engine.focusState) {
+-                if ((Engine.focusState & 2))
+-                    ResumeSound();
+-                Engine.focusState = 0;
+-            }
+-        }
++    ReleaseAudioDevice();
++    ReleaseRenderDevice();
++#if !RETRO_USE_ORIGINAL_CODE
++    ReleaseInputDevices();
++#if RETRO_USE_NETWORKING
++    DisconnectNetwork(true);
++#endif
++    WriteSettings();
++#if RETRO_USE_MOD_LOADER
++    SaveMods();
++#endif
++#endif
+ 
+-        if (!(Engine.focusState & 1) || vsPlaying) {
++#if RETRO_USING_SDL1 || RETRO_USING_SDL2
++    SDL_Quit();
++#endif
++}
++
++// Chimera: one pass of the loop above, so a host can step the engine a frame at a time
++void RetroEngine::RunFrame()
++{
+ #if !RETRO_USE_ORIGINAL_CODE
+-            for (int s = 0; s < gameSpeed; ++s) {
+-                ProcessInput();
++    Engine.deltaTime = 1.0 / 60;
+ #endif
++    running = ProcessEvents();
+ 
++    // Focus Checks
++    if (!(disableFocusPause & 2)) {
++        if (!Engine.hasFocus) {
++            if (!(Engine.focusState & 1))
++                Engine.focusState = PauseSound() ? 3 : 1;
++        }
++        else if (Engine.focusState) {
++            if ((Engine.focusState & 2))
++                ResumeSound();
++            Engine.focusState = 0;
++        }
++    }
++
++    if (!(Engine.focusState & 1) || vsPlaying) {
+ #if !RETRO_USE_ORIGINAL_CODE
+-                if (!masterPaused || frameStep) {
++        for (int s = 0; s < gameSpeed; ++s) {
++            ProcessInput();
+ #endif
+-                    ProcessNativeObjects();
++
+ #if !RETRO_USE_ORIGINAL_CODE
+-                }
++            if (!masterPaused || frameStep) {
+ #endif
++                ProcessNativeObjects();
++#if !RETRO_USE_ORIGINAL_CODE
+             }
++#endif
++        }
+ 
+ #if !RETRO_USE_ORIGINAL_CODE
+-            if (!masterPaused || frameStep) {
++        if (!masterPaused || frameStep) {
+ #endif
+-                FlipScreen();
++            FlipScreen();
+ 
+ #if !RETRO_USE_ORIGINAL_CODE
+ #if RETRO_USING_OPENGL && RETRO_USING_SDL2
+-                SDL_GL_SwapWindow(Engine.window);
++            SDL_GL_SwapWindow(Engine.window);
+ #endif
+-                frameStep = false;
+-            }
++            frameStep = false;
++        }
+ #endif
+ 
+ #if RETRO_REV00
+-            Engine.message = MESSAGE_NONE;
++        Engine.message = MESSAGE_NONE;
+ #endif
+ 
+ #if RETRO_USE_HAPTICS
+-            int hapticID = GetHapticEffectNum();
+-            if (hapticID >= 0) {
+-                // playHaptics(hapticID);
+-            }
+-            else if (hapticID == HAPTIC_STOP) {
+-                // stopHaptics();
+-            }
+-#endif
++        int hapticID = GetHapticEffectNum();
++        if (hapticID >= 0) {
++            // playHaptics(hapticID);
++        }
++        else if (hapticID == HAPTIC_STOP) {
++            // stopHaptics();
+         }
+-    }
+-
+-    ReleaseAudioDevice();
+-    ReleaseRenderDevice();
+-#if !RETRO_USE_ORIGINAL_CODE
+-    ReleaseInputDevices();
+-#if RETRO_USE_NETWORKING
+-    DisconnectNetwork(true);
+-#endif
+-    WriteSettings();
+-#if RETRO_USE_MOD_LOADER
+-    SaveMods();
+-#endif
+-#endif
+-
+-#if RETRO_USING_SDL1 || RETRO_USING_SDL2
+-    SDL_Quit();
+ #endif
++    }
+ }
+ 
+ #if RETRO_USE_MOD_LOADER
+diff --git a/RSDKv4/RetroEngine.hpp b/RSDKv4/RetroEngine.hpp
+index 803ae1f..5bde495 100644
+--- a/RSDKv4/RetroEngine.hpp
++++ b/RSDKv4/RetroEngine.hpp
+@@ -427,6 +427,7 @@ public:
+ 
+     void Init();
+     void Run();
++    void RunFrame();
+ 
+     bool LoadGameConfig(const char *filepath);
+ #if RETRO_USE_MOD_LOADER
