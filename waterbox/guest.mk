@@ -37,6 +37,12 @@ CORE_CXXFLAGS := $(WBFLAGS) $(CORE_CXXFLAGS_COMMON) $(CXXINCS) $(MBINCS) -I. -fe
 $(call flags_stamp,$(B),$(CC) | $(CXX) | $(SDL_CFLAGS) | $(CODEC_CFLAGS) | $(RSDK_CXXFLAGS) | $(CORE_CFLAGS) | $(CORE_CXXFLAGS))
 
 SDL_OBJS := $(patsubst $(SDL)/%.c,$(B)/sdl/%.o,$(SDL_SRCS))
+# SDL's audio converters as C, on every host: on x86-64 SDL compiles only its
+# SSE2 ones and picks them by asking the CPU, which this build never does
+# (SDL_CPUINFO_DISABLED), so no converter was chosen and every conversion
+# failed - no sound at all in Sonic CD, no sound effects in Sonic 1 and 2
+# (chimera#302). Without __SSE2__ this one file compiles the C converters.
+$(B)/sdl/src/audio/SDL_audiotypecvt.o: SDL_CFLAGS += -U__SSE2__
 CODEC_OBJS := $(patsubst $(ROOT)/extern/%.c,$(B)/codec/%.o,$(OGG_SRCS) $(VORBIS_SRCS))
 RSDK_OBJS := $(patsubst $(RSDK)/RSDKv4/%.cpp,$(B)/rsdk/%.o,$(RSDK_SRCS))
 CORE_OBJS := $(addprefix $(B)/core/,$(addsuffix .o,$(CORE_C_NAMES) $(CORE_CXX_NAMES)))

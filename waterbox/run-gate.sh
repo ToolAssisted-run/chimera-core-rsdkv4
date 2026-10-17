@@ -250,7 +250,24 @@ real_game() { # real_game <name> <setting> <file>
 	printf '{"game": "%s"}' "$2" > "$d/settings"
 	gn=4100
 	gat=$((gn * 9 / 10))
-	"$native" "$d" --frames $gn $route --trace "$d/t" --trace-props "Stage.List,Stage.Position" > "$d/n"
+	"$native" "$d" --frames $gn $route --trace "$d/t" --trace-props "Stage.List,Stage.Position" --audio "$d/pcm" > "$d/n"
+	# Sound effects (chimera#302): SDL had no sample converters, so the effects,
+	# which are converted to the device's format, never played and only the
+	# music did. From frame 2400 to 2700 this route has effects and no music:
+	# it was silent.
+	fx="$(python3 - "$d/pcm" <<'PY'
+import array, sys
+a = array.array("h")
+a.frombytes(open(sys.argv[1], "rb").read())
+per = 44100 * 2 // 60
+print(sum(1 for v in a[2400 * per:2700 * per] if v))
+PY
+)"
+	if [ "${fx:-0}" -gt 0 ]; then
+		pass "$1: sound effects - frames 2400 to 2700, effects and no music, hold $fx sound samples"
+	else
+		fail "$1: sound effects - frames 2400 to 2700 are silent: the effects did not play"
+	fi
 	"$wbx" "$core" "$d" --frames $gn $route > "$d/w" 2>/dev/null
 	stage="$(tail -1 "$d/t" | awk '{ print $4 "/" $5 }')"
 	same "$1" "$d/w" "$d/n" "native = sandbox, $gn frames (stage list/position at the end: $stage)"

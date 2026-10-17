@@ -83,6 +83,9 @@ int __wrap_SDL_InitSubSystem(Uint32 flags)
 
 /* the engine asks for 44100 Hz, signed 16-bit, stereo (Audio.cpp
  * InitAudioPlayback), which is what the core hands out */
+/* SDL's own (src/audio/SDL_audio_c.h), not in its public headers */
+void SDL_ChooseAudioConverters(void);
+
 SDL_AudioDeviceID __wrap_SDL_OpenAudioDevice(const char *device, int iscapture, const SDL_AudioSpec *desired,
                                              SDL_AudioSpec *obtained, int allowed_changes)
 {
@@ -97,6 +100,13 @@ SDL_AudioDeviceID __wrap_SDL_OpenAudioDevice(const char *device, int iscapture, 
 		*obtained = *desired;
 		obtained->silence = 0;
 	}
+	/* SDL chooses its sample-format converters when its audio starts, and
+	 * nothing starts it here: the device is the core's. Without them every
+	 * conversion fails - the engine's stream for video sound could not be
+	 * made, so RSDKv3 turned all its sound off, and RSDKv4's sound effects,
+	 * which are converted to the device's format, never played (chimera#302).
+	 * The converters are SDL's C ones on every computer (native.mk, guest.mk). */
+	SDL_ChooseAudioConverters();
 	rsdkdrv_audio_open(desired->callback, desired->userdata);
 	return 1;
 }

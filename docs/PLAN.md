@@ -89,6 +89,23 @@ reference's, byte for byte. The witness now runs to a frame count rather
 than a number of frames: on Windows a project opens two frames in, and a
 project run pauses at the end of its movie.
 
+## Sound effects (2026-10-17, chimera#302)
+
+Sonic 1 and 2 played their music but no sound effects. The effects are
+converted to the sound device's format with SDL, and SDL had no sample
+converters: it chooses them when its audio starts, which never happens here
+(the device is the core's), and on x86-64 it compiles only SSE2 ones, picked
+by asking the CPU, which this build never does (SDL_CPUINFO_DISABLED). The
+music needs no conversion, so it played.
+
+Now SDL_audiotypecvt.c is compiled without `__SSE2__`, so SDL compiles its C
+converters, the same on every computer, and the sound seam has SDL choose
+them when the device opens. Measured on the test script's route, Sonic 1:
+frames 2400 to 2700 (effects, no music) held no sound before and 144,872
+samples now; the extra sound comes right after each menu press and jump. New
+check `sound effects` for both games; test script all passed, frontend
+tests 9/0.
+
 ## Not done
 
 - Other releases of the data (Sonic Origins, iOS, the Android Forever
