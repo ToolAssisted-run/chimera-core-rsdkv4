@@ -72,18 +72,27 @@ memory; the math functions, rand and the clocks answered by the core), and:
   frames a second); 4100 frames with a save and a load before each, 80 s.
 - The test game: the core's tests (equivalence, rerecord, session, turbo,
   input, saves, pokes, the seed, the screen width, the render scale, the
-  game choice, five refusals, the clock, the firmware names) pass; the
-  frontend tests 9; contract tests 20.
+  game choice, five refusals, the clock, the firmware names: 20, and 6 more
+  on the two games) pass; the frontend tests 9; contract tests 20. (The
+  first commit's message said 22 core tests; there are 20.)
 - Each new test was broken on purpose and seen to fail: turbo (the OpenGL
   picture converted whatever the turbo), the seed, the render scale, the
   game choice and the firmware names. The tests shared with the v3 core
   were broken in that core.
+
+## Windows (2026-10-17)
+
+The package played in Chimera on Windows (the 2026-10-16 nightly, headless,
+with a configuration of its own), the test game's 100 frames, through the frontend
+test's witness: the memory domains after the last frame are the Linux
+reference's, byte for byte. The witness now runs to a frame count rather
+than a number of frames: on Windows a project opens two frames in, and a
+project run pauses at the end of its movie.
 
 ## Not done
 
 - Other releases of the data (Sonic Origins, iOS, the Android Forever
   versions): not tried.
 - Mods: the mod loader is off. Sonic 2's online two-player mode: not built.
-- Windows: the package has not been run on Windows yet.
 - Lag: a frame counts as reading the controls unless it is a stage's load
   frame; the menus read the pad every frame.
