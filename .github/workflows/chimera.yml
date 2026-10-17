@@ -67,7 +67,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends meson ninja-build build-essential cmake pkg-config python3 mono-complete xvfb libgl1-mesa-dev libegl-dev libx11-dev libxext-dev libasound2-dev python3-pip
+          sudo apt-get install -y --no-install-recommends meson ninja-build build-essential cmake pkg-config python3 bison flex python3-mako python3-packaging mono-complete xvfb libgl1-mesa-dev libegl-dev libx11-dev libxext-dev libasound2-dev python3-pip
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -107,13 +107,12 @@ jobs:
           path: |
             build/mesa
             build/deps
-          key: mesa-24.0.9-${{ runner.os }}-${{ hashFiles('waterbox/setup-mesa.sh') }}
+          key: mesa-24.0.9-${{ runner.os }}-${{ hashFiles('waterbox/setup-mesa.sh') }}-${{ hashFiles('chimera-checkout/extern/chimera-common-minibox/.git') }}
 
       - name: Build Mesa
         env:
           MINIBOX_DIR: ${{ github.workspace }}/chimera-checkout/extern/chimera-common-minibox
         run: |
-          python3 -m pip install --user mako packaging
           bash waterbox/setup-mesa.sh -m "$MINIBOX_DIR"
           bash waterbox/setup-mesa.sh -n
 
