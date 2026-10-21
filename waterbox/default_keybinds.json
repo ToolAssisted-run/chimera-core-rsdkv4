@@ -3,20 +3,21 @@
     "Default bindings for the Retro Engine v4's fourteen inputs: the keyboard as the decompilation's own settings.ini has it - the arrows,",
     "Z, X and C for A, B and C, A, S and D for X, Y and Z, Q and E for L and R, Enter for Start, Tab for Select. The first pad: the d-pad and",
     "left stick as the directions, its face buttons, shoulders, Start and Back.",
-    "Dev Menu is Escape, as the decompilation opens its developer menu."
+    "Dev Menu is Escape, as the decompilation opens its developer menu.",
+    "Y and Z are also on the controller's left and right triggers, as L and R have the shoulders (chimera#336)."
   ],
   "AllTrollers": {
     "Retro Engine v4": {
-      "P1 Up": "Up, J1 POV1U, X1 DpadUp, X1 LStickUp",
-      "P1 Down": "Down, J1 POV1D, X1 DpadDown, X1 LStickDown",
-      "P1 Left": "Left, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
-      "P1 Right": "Right, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 Up": "Up, J1 POV0U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "Down, J1 POV0D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "Left, J1 POV0L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "Right, J1 POV0R, X1 DpadRight, X1 LStickRight",
       "P1 A": "Z, J1 B1, X1 A",
       "P1 B": "X, J1 B2, X1 B",
       "P1 C": "C, J1 B3, X1 X",
       "P1 X": "A, J1 B4, X1 Y",
-      "P1 Y": "S",
-      "P1 Z": "D",
+      "P1 Y": "S, J1 B7, X1 LeftTrigger",
+      "P1 Z": "D, J1 B8, X1 RightTrigger",
       "P1 L": "Q, J1 B5, X1 LeftShoulder",
       "P1 R": "E, J1 B6, X1 RightShoulder",
       "P1 Start": "Enter, J1 B10, X1 Start",
