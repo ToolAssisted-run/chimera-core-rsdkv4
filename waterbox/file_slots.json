@@ -3,13 +3,13 @@
   "slots": [
     {
       "id": "savedata",
-      "title": "Save data",
+      "title": "slot.savedata",
       "min": 0,
       "max": 2,
       "formats": [
         "bin"
       ],
-      "help": "The game's saves as Emulator > Export Save Data wrote them: SData.bin (the save slots' progress) and SGame.bin, under those names. They are put in place before the game starts, so the game finds them as its own. A file with another name is refused."
+      "help": "slot.savedata.help"
     }
   ]
 }

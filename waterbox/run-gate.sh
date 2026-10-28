@@ -206,11 +206,11 @@ head -c 100000 /dev/zero > "$work/junk/Sonic1.rsdk"
 printf 'RSDKvB\0\0' > "$work/empty/Sonic1.rsdk"
 mkgame wide '{"screenWidth": 640}'
 mkgame big '{"renderScale": 3}'
-refuse none "Sonic1.rsdk) is not there" "no data file"
-refuse junk "not a Retro Engine v4 data file" "a file of zeros"
-refuse empty "has no Data/Game/GameConfig.bin" "a data file with no files in it"
-refuse wide "goes from 320 to 424" "screenWidth 640"
-refuse big "goes from 1 to 2" "renderScale 3"
+refuse none "error.game_s_data_file_is_not.Sonic1.rsdk" "no data file"
+refuse junk "error.why.not_v4" "a file of zeros"
+refuse empty "error.why.no_config" "a data file with no files in it"
+refuse wide "error.setting_screenwidth_is_it" "screenWidth 640"
+refuse big "error.setting_renderscale_is_it" "renderScale 3"
 
 echo "== clock"
 if nm "$core" | grep -qE ' (T|W|t) (time|__real_time)$'; then
@@ -308,7 +308,7 @@ if [ -n "$sonic1" ]; then
 		fail "Sonic 1: save data - a project given SData.bin does not start with those bytes"
 	elif [ "$(grep videoHash "$work/fresh.n")" = "$(grep videoHash "$work/seeded.n")" ]; then
 		fail "Sonic 1: save data - the save select with the save given is the fresh game's: the game did not read it"
-	elif ! grep -q "Other.bin is not a file this game keeps" "$work/sdx.n"; then
+	elif ! grep -q "error.save_data_is_not_a_file_this.Other.bin" "$work/sdx.n"; then
 		fail "Sonic 1: save data - a save named Other.bin was not refused ($(tail -1 "$work/sdx.n"))"
 	else
 		pass "Sonic 1: save data - SData.bin ($(stat -c %s "$work/sd/SData.bin") bytes) exported, given back and read (the save select differs from a fresh game's), a wrong name refused"

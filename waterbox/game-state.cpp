@@ -101,11 +101,11 @@ int rsdkdrv_domain_writable(int i) { return i >= 1 && i <= 2; }
 namespace {
 
 const struct { const char *name; size_t off; const char *type; int count; const char *desc; } k_entity[] = {
-	{ "X", offsetof(Entity, xpos), "s32", 1, "Position, 16.16 fixed point" },
-	{ "Y", offsetof(Entity, ypos), "s32", 1, "Position, 16.16 fixed point" },
+	{ "X", offsetof(Entity, xpos), "s32", 1, "property.entity.x" },
+	{ "Y", offsetof(Entity, ypos), "s32", 1, "property.entity.x" },
 	{ "X Velocity", offsetof(Entity, xvel), "s32", 1, "" },
 	{ "Y Velocity", offsetof(Entity, yvel), "s32", 1, "" },
-	{ "Speed", offsetof(Entity, speed), "s32", 1, "Ground speed" },
+	{ "Speed", offsetof(Entity, speed), "s32", 1, "property.entity.speed" },
 	{ "Values", offsetof(Entity, values), "s32", 48, "" },
 	{ "State", offsetof(Entity, state), "s32", 1, "" },
 	{ "Angle", offsetof(Entity, angle), "s32", 1, "" },
@@ -134,8 +134,8 @@ const struct { const char *name; size_t off; const char *type; int count; const 
 	{ "Visible", offsetof(Entity, visible), "u8", 1, "" },
 	{ "Tile Collisions", offsetof(Entity, tileCollisions), "u8", 1, "" },
 	{ "Object Interactions", offsetof(Entity, objectInteractions), "u8", 1, "" },
-	{ "Gravity", offsetof(Entity, gravity), "u8", 1, "In the air" },
-	{ "Left", offsetof(Entity, left), "u8", 1, "The object's controls this frame" },
+	{ "Gravity", offsetof(Entity, gravity), "u8", 1, "property.entity.gravity" },
+	{ "Left", offsetof(Entity, left), "u8", 1, "property.entity.left" },
 	{ "Right", offsetof(Entity, right), "u8", 1, "" },
 	{ "Up", offsetof(Entity, up), "u8", 1, "" },
 	{ "Down", offsetof(Entity, down), "u8", 1, "" },
@@ -164,7 +164,7 @@ const char *rsdkdrv_game_properties(void)
 	GS("Stage.List", 10, "u8", ", \"group\": \"Stage\", \"values\": { \"0\": \"Presentation\", \"1\": \"Regular\", \"2\": \"Bonus\", \"3\": \"Special\" }");
 	GS("Stage.Position", 11, "u8", ", \"group\": \"Stage\"");
 	GS("Stage.Act", 12, "s32", ", \"group\": \"Stage\"");
-	GS("Stage.Time Ms", 16, "u32", ", \"group\": \"Stage\", \"description\": \"The stage timer (minutes, seconds and hundredths), in milliseconds\"");
+	GS("Stage.Time Ms", 16, "u32", ", \"group\": \"Stage\", \"description\": \"property.stage_time_ms\"");
 	GS("Stage.Frame Counter", 20, "s32", ", \"group\": \"Stage\"");
 	GS("Stage.Time Enabled", 24, "bool", ", \"group\": \"Stage\"");
 	P("    { \"name\": \"Stage.Folder\", \"domain\": \"Game State\", \"offset\": 32, \"type\": \"string\", \"length\": 64, \"writable\": false, \"group\": \"Stage\" },\n");

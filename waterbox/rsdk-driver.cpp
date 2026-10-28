@@ -33,6 +33,11 @@
 
 #include "rsdk-driver.h"
 
+/* A text a person reads is a key of languages/en.json, each of its
+ * arguments after a TEXT_ARG (chimera docs/translations.md). TEXT_ARG is a
+ * string of its own so the byte after it is never read as more of its hex. */
+#define TEXT_ARG "\x1f"
+
 namespace {
 
 struct Driver
@@ -123,12 +128,12 @@ int rsdkdrv_init(char *err, int errsize)
 	rsdk_settings_read(&g.settings);
 	if (g.settings.screen_width < 320 || g.settings.screen_width > 424)
 	{
-		snprintf(err, (size_t)errsize, "the setting screenWidth is %d; it goes from 320 to 424", g.settings.screen_width);
+		snprintf(err, (size_t)errsize, "error.setting_screenwidth_is_it" TEXT_ARG "%d", g.settings.screen_width);
 		return 0;
 	}
 	if (g.settings.render_scale < 1 || g.settings.render_scale > RSDK_MAX_SCALE)
 	{
-		snprintf(err, (size_t)errsize, "the setting renderScale is %d; it goes from 1 to %d", g.settings.render_scale, RSDK_MAX_SCALE);
+		snprintf(err, (size_t)errsize, "error.setting_renderscale_is_it" TEXT_ARG "%d" TEXT_ARG "%d", g.settings.render_scale, RSDK_MAX_SCALE);
 		return 0;
 	}
 	g.video_w = g.settings.screen_width * g.settings.render_scale;
@@ -139,16 +144,16 @@ int rsdkdrv_init(char *err, int errsize)
 	Engine.Init();
 	if (!Engine.running || !Engine.initialised)
 	{
-		snprintf(err, (size_t)errsize, "the engine did not start: %s",
-		         !Engine.usingDataFile_Config ? "the data file is not a Retro Engine v4 data file"
-		         : CheckFileInfo("data/game/gameconfig.bin") < 0 ? "the data file has no Data/Game/GameConfig.bin"
-		         : !g.gl ? "its OpenGL could not be made"
-		                 : "the game's configuration could not be read");
+		snprintf(err, (size_t)errsize, "error.engine_did_not_start" TEXT_ARG "%s",
+		         !Engine.usingDataFile_Config ? "error.why.not_v4"
+		         : CheckFileInfo("data/game/gameconfig.bin") < 0 ? "error.why.no_config"
+		         : !g.gl ? "error.why.no_opengl"
+		                 : "error.why.no_configuration");
 		return 0;
 	}
 	if (!g.audio_cb)
 	{
-		snprintf(err, (size_t)errsize, "the engine did not open its sound device");
+		snprintf(err, (size_t)errsize, "error.engine_did_not_open_its");
 		return 0;
 	}
 	g.init_done = 1;
