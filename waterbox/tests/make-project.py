@@ -15,6 +15,29 @@ import hashlib
 import json
 import zipfile
 
+
+def inputs_of(log):
+    """A movie's text block ("[Input]", "LogKey:...", its entries, "[/Input]")
+    as a project file's "inputs": the key's groups of column names, and one
+    entry a frame. A group starts where a '#' begins a name; a name ends at
+    '|' (as Chimera splits a key)."""
+    lines = log.splitlines()
+    out = {}
+    key = next((l[len("LogKey:"):] for l in lines if l.startswith("LogKey:")), None)
+    if key is not None:
+        groups, at = [], 0
+        while at < len(key):
+            assert key[at] == "#", key
+            groups.append([])
+            at += 1
+            while at < len(key) and key[at] != "#":
+                bar = key.index("|", at)
+                groups[-1].append(key[at:bar])
+                at = bar + 1
+        out["columns"] = groups
+    out["entries"] = [l for l in lines if l.startswith("|")]
+    return out
+
 LETTERS = {"P1 Up": "U", "P1 Down": "D", "P1 Left": "L", "P1 Right": "R",
            "P1 A": "A", "P1 B": "B", "P1 C": "C", "P1 X": "X", "P1 Y": "Y", "P1 Z": "Z",
            "P1 L": "l", "P1 R": "r", "P1 Start": "S", "P1 Select": "s", "Dev Menu": "E"}
@@ -70,7 +93,7 @@ def main():
         "firmware": [{"id": d["id"], "sha1": sha1(a.data)} for d in cfg["firmware"]
                      if d["requiredWhen"]["is"] == settings["game"]],
         "coreCache": [],
-        "input": log,
+        "inputs": inputs_of(log),
         "markers": [],
         "branches": [],
         "headers": {
