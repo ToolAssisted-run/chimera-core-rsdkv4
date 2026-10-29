@@ -191,7 +191,7 @@ p["settings"]["screenWidth"] = 1000
 json.dump(p, open(sys.argv[2], "w"), indent="\t")
 EOF
 code="$(gui refuse "$config" "$work/wide.chimeraProject" 10)"
-if grep -q "the setting screenWidth is 1000; it goes from 320 to 424" "$work/refuse.log"; then
+if grep -q "The setting screenWidth is 1000. It goes from 320 to 424." "$work/refuse.log"; then
 	report "gui:refusal" PASS "the core's load error is what Chimera shows (headless: exit $code with the text)"
 else
 	report "gui:refusal" FAIL "exit $code; $(grep -m1 -i 'screenwidth\|error' "$work/refuse.log" | cut -c1-100)"
