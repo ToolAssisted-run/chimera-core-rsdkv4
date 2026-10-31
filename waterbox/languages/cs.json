@@ -26,7 +26,7 @@
 		"setting.devmenu": "Vývojářská nabídka",
 		"setting.devmenu.about": "Zapne vývojářskou nabídku enginu (DevMenu v jeho nastavení), jak to dělá settings.ini dekompilace, a přidá ovládací prvek Dev Menu, který ji otevře (Escape na klávesnici PC). Z nabídky lze vybrat scénu přímo. Mění to, co hra dělá, takže je součástí projektu.",
 		"setting.game": "Hra",
-		"setting.game.about": "Která hra tento projekt hraje (v Chimeře je to Systém). „sonic1“ je Sonic the Hedgehog, „sonic2“ Sonic the Hedgehog 2, obě v remasteru z roku 2013. Hra určuje, který datový soubor projekt potřebuje.",
+		"setting.game.about": "Která hra tento projekt hraje (v programu Chimera je to Systém). „sonic1“ je Sonic the Hedgehog, „sonic2“ Sonic the Hedgehog 2, obě v remasteru z roku 2013. Hra určuje, který datový soubor projekt potřebuje.",
 		"setting.game.option.sonic1": "Sonic the Hedgehog",
 		"setting.game.option.sonic2": "Sonic the Hedgehog 2",
 		"setting.language": "Jazyk",

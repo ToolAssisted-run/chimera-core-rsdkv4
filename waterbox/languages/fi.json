@@ -26,7 +26,7 @@
 		"setting.devmenu": "Kehittäjävalikko",
 		"setting.devmenu.about": "Kytkee moottorin kehittäjävalikon päälle (DevMenu sen asetustiedostossa), kuten dekompilaation settings.ini tekee, ja lisää Dev Menu -ohjaimen, joka avaa sen (Escape PC-näppäimistöllä). Valikosta tason voi valita suoraan. Se muuttaa, mitä peli tekee, joten se on osa projektia.",
 		"setting.game": "Peli",
-		"setting.game.about": "Mitä peliä tämä projekti pelaa (se on Chimeran Järjestelmä). \"sonic1\" on Sonic the Hedgehog ja \"sonic2\" Sonic the Hedgehog 2, kummatkin vuoden 2013 remasterina. Peli päättää, mitä datatiedostoa projekti tarvitsee.",
+		"setting.game.about": "Mitä peliä tämä projekti pelaa (se on Chimera-ohjelman Järjestelmä). \"sonic1\" on Sonic the Hedgehog ja \"sonic2\" Sonic the Hedgehog 2, kummatkin vuoden 2013 remasterina. Peli päättää, mitä datatiedostoa projekti tarvitsee.",
 		"setting.game.option.sonic1": "Sonic the Hedgehog",
 		"setting.game.option.sonic2": "Sonic the Hedgehog 2",
 		"setting.language": "Kieli",
