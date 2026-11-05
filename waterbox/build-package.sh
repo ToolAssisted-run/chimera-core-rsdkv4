@@ -42,6 +42,9 @@ bash "$here/setup-mesa.sh" -m "$mb" > "$root/build/package-mesa.log" 2>&1 || {
 	tail -20 "$root/build/package-mesa.log" >&2; echo "the guest Mesa build failed (build/package-mesa.log)" >&2; exit 1; }
 make -C "$here" -f guest.mk MB="$mb" -j"$(nproc)" > "$root/build/package-make.log" 2>&1 || {
 	tail -20 "$root/build/package-make.log" >&2; echo "the guest build failed (build/package-make.log)" >&2; exit 1; }
+# where the code reads its thread pointer, listed in the image: an Intel Mac
+# rewrites those reads as the core loads (miniBox's wbx-tp-rewrite.py)
+python3 "$mb/source/guest/wbx-tp-rewrite.py" "$root/build/guest/core.wbx"
 sh "$mb/source/guest/check-wbx.sh" "$root/build/guest/core.wbx"
 
 staging="$root/build/package-staging"
